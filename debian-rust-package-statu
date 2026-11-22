@@ -1,0 +1,67 @@
+# Monitoramento de Pacotes Rust no Debian
+
+**Data da análise:** 28 de agosto de 2026  
+**Autor:** PE-CD  
+**Status:** Em monitoramento  
+
+Este documento compara as versões dos pacotes Rust disponíveis nas distribuições **stable (trixie)** e **unstable (sid)** do Debian.
+
+---
+
+## Resultados
+
+### Pacotes analisados: 18
+
+| Pacote | Versão (stable) | Versão (unstable) | Status |
+|--------|----------------|-------------------|--------|
+| rust-all | 1.85.0+dfsg3-1 | 1.95.0+dfsg1-2 | Atualizado |
+| rust-analyzer | 1.85.0+dfsg3-1 | 1.95.0+dfsg1-2 | Atualizado |
+| rust-clippy | 1.85.0+dfsg3-1 | 1.95.0+dfsg1-2 | Atualizado |
+| rust-coreutils | 0.0.30-2 | 0.10.0-1 | Atualizado |
+| rust-diffutils | 0.4.2-1 | 0.5.0-1 | Atualizado |
+| rust-doc | 1.85.0+dfsg3-1 | 1.95.0+dfsg1-2 | Atualizado |
+| rust-findutils | 0.8.0-1 | 0.10.0-1 | Atualizado |
+| rust-gdb | 1.85.0+dfsg3-1 | 1.95.0+dfsg1-2 | Atualizado |
+| rust-lldb | 1.85.0+dfsg3-1 | 1.95.0+dfsg1-2 | Atualizado |
+| rust-llvm | 1.85.0+dfsg3-1 | 1.95.0+dfsg1-2 | Atualizado |
+| rust-src | 1.85.0+dfsg3-1 | 1.95.0+dfsg1-2 | Atualizado |
+| rust-toml2json | 1.3.1-1 | 1.4.0-1 | Atualizado |
+| rustc | 1.85.0+dfsg3-1 | 1.95.0+dfsg1-2 | Atualizado |
+| rustdoc-stripper | 0.1.12-1 | 0.1.19-1 | Atualizado |
+| rustfilt | 0.2.1-2 | 0.2.1-2 | Mesma versão |
+| rustfmt | 1.85.0+dfsg3-1 | 1.95.0+dfsg1-2 | Atualizado |
+| rustup | 1.27.1-3 | 1.27.1-8 | Rebuild aumentado |
+| rusty-tags | 3.10.0-1 | 3.11.0-1 | Atualizado |
+
+---
+
+## Análise
+
+- Todos os 18 pacotes estão disponíveis na unstable.
+- A maioria apresenta versões mais recentes que a stable.
+- O time Debian mantém os pacotes e extensões atualizados.
+
+### Observações
+
+- `rustfilt` mantém a mesma versão (0.2.1-2) em ambas as distribuições – pode ser a versão mais recente upstream ou estar com migração travada.
+- `rustup` teve múltiplos rebuilds (de -3 para -8) – pode indicar tentativas de compilação ou ajustes.
+
+---
+
+## Script Utilizado
+
+```bash
+for pkg in rust-all rust-analyzer rust-clippy rust-coreutils rust-diffutils rust-doc rust-findutils rust-gdb rust-lldb rust-llvm rust-src rust-toml2json rustc rustdoc-stripper rustfilt rustfmt rustup rusty-tags; do
+    stable=$(curl -s "https://packages.debian.org/stable/$pkg" | grep -oP 'Keywords.*,\K[^,]*' | head -1 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//;s/">$//')
+    unstable=$(curl -s "https://packages.debian.org/unstable/$pkg" | grep -oP 'Keywords.*,\K[^,]*' | head -1 | sed 's/^[[:space:]]*//;s/[[:space:]]*$//;s/">$//')
+    echo "$pkg | $stable | $unstable"
+done
+
+---
+
+### Fontes
+
+Time Rust no Salsa	https://salsa.debian.org/rust-team
+Busca de pacotes Debian	https://packages.debian.org/
+Rastreador de pacotes	https://tracker.debian.org/
+Bugs do time Rust	https://bugs.debian.org/rust-team
